@@ -10,8 +10,8 @@ import os
 import json
 import pickle
 from lightfm import LightFM
-from lightfm.datasets import fetch_movielens
 from lightfm.evaluation import precision_at_k
+from get_data import fetch_movielens
 %matplotlib inline
 import random
 random.seed(0)
@@ -19,7 +19,7 @@ random.seed(0)
 
 # Load the MovieLens 100k dataset. Only five
 # star ratings are treated as positive.
-data = fetch_movielens(min_rating=4.0)
+data = fetch_movielens(data_home=os.environ['DATA_DIR'], min_rating=4.0)
 
 # Instantiate and train the model
 model = LightFM(loss='warp')
@@ -31,7 +31,7 @@ test_precision = precision_at_k(model, data['test'], k=5).mean()
 print test_precision
 
 # save the classifier
-stats = {"train_precision": str(train_precision),"test_precision":str(test_precision)}
+stats = {"train_precision": float(train_precision),"test_precision":float(test_precision)}
 print stats
 model_filename = os.path.join(os.environ['OUTPUT_DIR'],'model.dat')
 pickle.dump(model, open(model_filename, 'wb'))
